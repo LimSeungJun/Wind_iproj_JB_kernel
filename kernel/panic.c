@@ -246,16 +246,13 @@ void panic(const char *fmt, ...)
 	 * Do we want to call this before we try to display a message?
 	 */
 	crash_kexec(NULL);
-
-	kmsg_dump(KMSG_DUMP_PANIC);
-
 	/*
 	 * Note smp_send_stop is the usual smp shutdown function, which
 	 * unfortunately means it may not be hardened to work in a panic
 	 * situation.
 	 */
 	smp_send_stop();
-
+	kmsg_dump(KMSG_DUMP_PANIC);
 #ifdef CONFIG_LGE_DEBUG	/*                                                   */
 #if !defined(CONFIG_MACH_LGE_325_BOARD_VZW)
 	if (!in_interrupt())
