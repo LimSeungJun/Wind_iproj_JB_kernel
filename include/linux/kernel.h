@@ -197,6 +197,12 @@ static inline void might_fault(void)
 }
 #endif
 
+#ifdef CONFIG_LGE_HANDLE_PANIC
+extern void set_crash_store_enable(void);
+extern void set_crash_store_disable(void);
+extern void store_crash_log(char *p);
+#endif
+
 extern struct atomic_notifier_head panic_notifier_list;
 extern long (*panic_blink)(int state);
 __printf(1, 2)
@@ -348,6 +354,12 @@ extern int func_ptr_is_kernel_text(void *ptr);
 
 struct pid;
 extern struct pid *session_of_pgrp(struct pid *pgrp);
+
+#if defined(CONFIG_LGE_HANDLE_PANIC)
+extern void set_crash_store_enable(void);
+extern void set_crash_store_disable(void);
+extern void store_crash_log(char *p);
+#endif
 
 unsigned long int_sqrt(unsigned long);
 
@@ -705,6 +717,12 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
 
 extern int do_sysinfo(struct sysinfo *info);
 
+/* To identify board information in panic logs, set this */
+extern char *mach_panic_string;
+
 #endif /* __KERNEL__ */
+
+/* To identify board information in panic logs, set this */
+extern char *mach_panic_string;
 
 #endif
