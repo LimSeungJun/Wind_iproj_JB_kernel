@@ -141,7 +141,11 @@ endif
 # Platform dependent feature
 #############################
 
+ifeq ($(CONFIG_MACH_LGE_IJB_BOARD_LGU),)
+ifeq ($(CONFIG_MACH_LGE_IJB_BOARD_SKT),)
 DHDCFLAGS += -DGET_CUSTOM_MAC_ENABLE
+endif
+endif
 DHDCFLAGS += -DENABLE_INSMOD_NO_FW_LOAD
 
 
