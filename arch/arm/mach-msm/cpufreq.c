@@ -32,6 +32,10 @@
 
 #include "acpuclock.h"
 
+#define SUSPEND_FREQ 702000
+static unsigned int suspend_freq = SUSPEND_FREQ;
+module_param(suspend_freq, int, 0644);
+
 #ifdef CONFIG_SMP
 struct cpufreq_work_struct {
 	struct work_struct work;
@@ -141,6 +145,34 @@ static void set_cpu_work(struct work_struct *work)
 	complete(&cpu_work->complete);
 }
 #endif
+
+static void cpulimit_early_suspend(struct early_suspend *handler)
+{
+	int cpu;
+
+	for_each_possible_cpu(cpu) {
+		msm_cpufreq_set_freq_limits(cpu, MSM_CPUFREQ_NO_LIMIT, suspend_freq);
+      		pr_info("Cpulimit: Early suspend - limit max frequency to: %d\n", suspend_freq);
+    	}
+	return;
+}
+
+static void cpulimit_late_resume(struct early_suspend *handler)
+{
+	int cpu;
+
+	for_each_possible_cpu(cpu) {
+		msm_cpufreq_set_freq_limits(cpu, MSM_CPUFREQ_NO_LIMIT, MSM_CPUFREQ_NO_LIMIT);
+      		pr_info("Cpulimit: Late resume - restore max frequency.\n");
+    	}
+	return;
+}
+
+static struct early_suspend cpulimit_suspend = {
+	.suspend = cpulimit_early_suspend,
+	.resume = cpulimit_late_resume,
+	.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1,
+};
 
 static int msm_cpufreq_target(struct cpufreq_policy *policy,
 				unsigned int target_freq,
@@ -418,6 +450,8 @@ static int __init msm_cpufreq_register(void)
 			WQ_MEM_RECLAIM | WQ_HIGHPRI, 1);
 	register_hotcpu_notifier(&msm_cpufreq_cpu_notifier);
 #endif
+
+	register_early_suspend(&cpulimit_suspend);
 
 	return cpufreq_register_driver(&msm_cpufreq_driver);
 }
