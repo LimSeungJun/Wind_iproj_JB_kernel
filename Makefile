@@ -192,7 +192,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 ARCH		:= arm
-CROSS_COMPILE	:= /home/lyfkevin/android/arm-cortex_a8-linux-gnueabi-linaro/bin/arm-cortex_a8-linux-gnueabi-
+CROSS_COMPILE	:= /home/lyfkevin/android/arm-linux-androideabi-4.6/bin/arm-linux-androideabi-
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?= $(SUBARCH)
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
