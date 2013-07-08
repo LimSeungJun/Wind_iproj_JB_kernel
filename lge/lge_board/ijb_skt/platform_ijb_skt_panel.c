@@ -270,7 +270,7 @@ static int mipi_dsi_panel_power(int on)
 	}
 
 	if(on){
-		rc = regulator_set_voltage(reg_8901_l2, 3000000, 3000000);
+		rc = regulator_set_voltage(reg_8901_l2, 2600000, 2600000);
 		if (!rc)
 			rc = regulator_enable(reg_8901_l2);
 		if (rc) {
@@ -289,7 +289,7 @@ static int mipi_dsi_panel_power(int on)
 		}
 		udelay(500); // 100us
 
-		rc = regulator_set_voltage(reg_8901_l3, 3000000, 3000000); // +3V0_LCD_VCI
+		rc = regulator_set_voltage(reg_8901_l3, 2600000, 2600000); // +2V6_LCD_VCI
 		if (!rc)
 			rc = regulator_enable(reg_8901_l3);
 		if (rc) {

@@ -2573,8 +2573,8 @@ static struct rpm_regulator_init_data rpm_regulator_init_data[] = {
 	RPM_NCP(PM8058_NCP, 0, 1, 0, 0, 0), /* NC */                   //                                
 	RPM_LDO(PM8901_L0,  0, 1, 0, 0, 0, LDO300HMIN), /* NC */
 	RPM_LDO(PM8901_L1,  0, 1, 0, 0, 0, LDO300HMIN), /* NC */ //                                                                        
-	RPM_LDO(PM8901_L2,  0, 1, 0, 3000000, 3000000, LDO300HMIN), /* +3V0_LCD_VCC */
-	RPM_LDO(PM8901_L3,  0, 1, 0, 3000000, 3000000, LDO300HMIN), /* +3V0_LCD_VCI */
+	RPM_LDO(PM8901_L2,  0, 1, 0, 2600000, 2600000, LDO300HMIN), /* +2V6_LCD_VCC */
+	RPM_LDO(PM8901_L3,  0, 1, 0, 2600000, 2600000, LDO300HMIN), /* +2V6_LCD_VCI */
 	RPM_LDO(PM8901_L4,  0, 1, 0, 2800000, 2800000, LDO300HMIN), /* 2V8_VTCAM_AVDD */ //                  
 	RPM_LDO(PM8901_L5,  0, 1, 0, 2850000, 2850000, LDO300HMIN), /* +2V85_eMMC */
 	RPM_LDO(PM8901_L6,  0, 1, 0, 0, 0, LDO300HMIN), /* NC */
@@ -6664,7 +6664,7 @@ static unsigned int bcm432x_sdcc_wlan_slot_status(struct device *dev)
 }
 */
 static struct mmc_platform_data bcm433x_sdcc_wlan_data = {
-	.ocr_mask   	= MMC_VDD_165_195 | MMC_VDD_30_31,
+	.ocr_mask   	= MMC_VDD_165_195 | MMC_VDD_27_28,
 	.translate_vdd	= msm_sdcc_setup_power,
 	.mmc_bus_width	= MMC_CAP_4_BIT_DATA,
 	//JB Not used .status     	= bcm432x_sdcc_wlan_slot_status,
