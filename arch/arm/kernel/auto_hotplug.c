@@ -24,7 +24,7 @@
  * event by calling void hotplug_boostpulse(void)
  *
  * Not recommended for use with OMAP4460 due to the potential for lockups
- * whilst hotplugging.
+ * whilst hotplugging
  */
 
 #include <linux/kernel.h>
@@ -53,7 +53,7 @@
  * SAMPLING_PERIODS * MIN_SAMPLING_RATE is the minimum
  * load history which will be averaged
  */
-#define SAMPLING_PERIODS	10
+#define SAMPLING_PERIODS	30
 #define INDEX_MAX_VALUE		(SAMPLING_PERIODS - 1)
 /*
  * MIN_SAMPLING_RATE is scaled based on num_online_cpus()
@@ -68,8 +68,8 @@
  * DISABLE is the load at which a CPU is disabled
  * These two are scaled based on num_online_cpus()
  */
-#define ENABLE_ALL_LOAD_THRESHOLD	(125 * CPUS_AVAILABLE)
-#define ENABLE_LOAD_THRESHOLD		225
+#define ENABLE_ALL_LOAD_THRESHOLD	320
+#define ENABLE_LOAD_THRESHOLD		320
 #define DISABLE_LOAD_THRESHOLD		60
 
 /* Control flags */
@@ -333,14 +333,14 @@ inline void hotplug_boostpulse(void)
 			cancel_delayed_work_sync(&hotplug_offline_work);
 			flags |= HOTPLUG_PAUSED;
 			schedule_work(&hotplug_online_single_work);
-			schedule_delayed_work(&hotplug_unpause_work, HZ * 2);
+			schedule_delayed_work(&hotplug_unpause_work, HZ );
 		} else {
 			pr_info("auto_hotplug: %s: %d CPUs online\n", __func__, num_online_cpus());
 			if (delayed_work_pending(&hotplug_offline_work)) {
 				pr_info("auto_hotplug: %s: Cancelling hotplug_offline_work\n", __func__);
 				cancel_delayed_work(&hotplug_offline_work);
 				flags |= HOTPLUG_PAUSED;
-				schedule_delayed_work(&hotplug_unpause_work, HZ * 2);
+				schedule_delayed_work(&hotplug_unpause_work, HZ );
 				schedule_delayed_work_on(0, &hotplug_decision_work, MIN_SAMPLING_RATE);
 			}
 		}
@@ -367,7 +367,7 @@ static void auto_hotplug_late_resume(struct early_suspend *handler)
 	pr_info("auto_hotplug: late resume handler\n");
 	flags &= ~EARLYSUSPEND_ACTIVE;
 
-	schedule_delayed_work_on(0, &hotplug_decision_work, HZ);
+	schedule_work(&hotplug_online_all_work);
 }
 
 static struct early_suspend auto_hotplug_suspend = {
@@ -392,8 +392,8 @@ int __init auto_hotplug_init(void)
 	 * Give the system time to boot before fiddling with hotplugging.
 	 */
 	flags |= HOTPLUG_PAUSED;
-	schedule_delayed_work_on(0, &hotplug_decision_work, HZ * 10);
-	schedule_delayed_work(&hotplug_unpause_work, HZ * 20);
+	schedule_delayed_work_on(0, &hotplug_decision_work, HZ * 5);
+	schedule_delayed_work(&hotplug_unpause_work, HZ * 10);
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	register_early_suspend(&auto_hotplug_suspend);
