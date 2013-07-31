@@ -64,6 +64,7 @@ static spinlock_t speedchange_cpumask_lock;
 static struct mutex gov_lock;
 
 /* Hi speed to bump to from lo speed when load burst (default max) */
+#define DEFAULT_HISPEED_FREQ 1134000
 static unsigned int hispeed_freq;
 
 /* Go to hi speed when CPU load at or above this value. */
@@ -1193,6 +1194,9 @@ static int __init cpufreq_interactive_init(void)
 	unsigned int i;
 	struct cpufreq_interactive_cpuinfo *pcpu;
 	struct sched_param param = { .sched_priority = MAX_RT_PRIO-1 };
+
+	hispeed_freq = DEFAULT_HISPEED_FREQ;
+	input_boost_freq = DEFAULT_INPUT_BOOST_FREQ;
 
 	/* Initalize per-cpu timers */
 	for_each_possible_cpu(i) {
